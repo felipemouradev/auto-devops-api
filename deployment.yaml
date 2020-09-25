@@ -1,0 +1,27 @@
+---
+  apiVersion: "apps/v1"
+  kind: "Deployment"
+  metadata: 
+    labels: {}
+    name: "app-teste"
+  spec: 
+    replicas: 1
+    selector: 
+      matchLabels: 
+        app.kubernetes.io/name: "{{ include \"scaffoldhelm.name\" . }}"
+        app.kubernetes.io/instance: "{{ .Release.Name }}"
+    template: 
+      metadata: 
+        annotations: 
+          traffic.sidecar.istio.io/excludeOutboundIPRanges: "0.0.0.0/0"
+        labels: 
+          app.kubernetes.io/name: "app-teste"
+          app.kubernetes.io/instance: "app-teste"
+      spec: 
+        containers: 
+          image: "nginx"
+          name: "app-teste"
+          ports: 
+            containerPort: 9003
+            name: "port-nginx"
+            protocol: "TCP"
