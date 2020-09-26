@@ -1,5 +1,5 @@
 import {Test, TestingModule} from '@nestjs/testing';
-import {ChartService} from '../chart.service';
+import {ChartService} from '../services/chart.service';
 import {IContainers, IMetadata} from "../interfaces/base.interfaces";
 import {IDeployment, IDeploymentSpec} from "../interfaces/deployment.interface";
 import * as json2yaml from "json-to-pretty-yaml";
@@ -16,7 +16,11 @@ describe('ChartService', () => {
         service = module.get<ChartService>(ChartService);
     });
 
-    it('should be defined', () => {
+    it('test process chart', ()=> {
+        service.processChart()
+    });
+
+    it('gen deployment', () => {
         const dataContainers: IContainers[] = [{
             image: "nginx:latest",
             name: "app-teste",

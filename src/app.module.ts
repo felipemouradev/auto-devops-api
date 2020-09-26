@@ -1,15 +1,19 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import {TypegooseModule} from 'nestjs-typegoose';
-import { ChartModule } from './chart/chart.module';
+import {Module} from '@nestjs/common';
+import {AppController} from './app.controller';
+import {AppService} from './app.service';
+import {MongooseModule} from '@nestjs/mongoose';
+import {KubeResourcesModule} from './kube-resources/kube-resources.module';
 
 @Module({
-  imports: [
-    TypegooseModule.forRoot('mongodb://localhost:27021/devops-tools'),
-    ChartModule
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        MongooseModule.forRoot('mongodb://localhost:27021/auto-devops', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }),
+        KubeResourcesModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -2,7 +2,7 @@ export interface IBaseKind {
     apiVersion: string,
     kind: string,
     metadata: IMetadata,
-    spec: any
+    spec?: any
 }
 
 export interface IMetadata {
@@ -16,7 +16,7 @@ export interface IPorts {
     protocol: string,
 }
 
-export interface IConfigMap {
+export interface IEnvConfigMap {
     name: string,
     valueFrom: {
         configMapKeyRef: {
@@ -29,7 +29,7 @@ export interface IConfigMap {
 export interface IContainers {
     name: string,
     image: string,
-    env?: IConfigMap[],
+    env?: IEnvConfigMap[],
     imagePullPolicy?: string,
     resources?: [{ [key: string]: string }],
     ports: IPorts[]

@@ -17,8 +17,8 @@ export interface IDeploymentSpec {
         spec: {
             imagePullSecrets?: [{ name: string }],
             containers: IContainers[],
-            nodeSelector?: [{ [key: string]: string }],
-            affinity?: [{ [key: string]: string }],
+            nodeSelector?: { [key: string]: string },
+            affinity?: { [key: string]: string },
             tolerations?: [{ [key: string]: string }],
         }
     }
