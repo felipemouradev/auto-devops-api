@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.6.1",
     "@typegoose/typegoose": "^7.4.1",
+    "aws-sdk": "^2.1096.0",
     "class-validator": "^0.12.2",
     "js-yaml": "^3.14.0",
     "json-to-pretty-yaml": "^1.2.2",
@@ -36,7 +37,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
     "swagger-ui-express": "^4.1.4",
-    "unzip": "^0.1.11"
+    "unzip": "^0.1.11",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",

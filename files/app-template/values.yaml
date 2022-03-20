@@ -1,0 +1,49 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 2
+
+app:
+  image:
+    repository: felipemouradev/image-deploy
+    tag: latest
+    pullPolicy: Always
+  container:
+    port: 3000
+
+nameOverride: "name-app"
+fullnameOverride: "name-app"
+
+imagePullSecrets:
+  name: harbor-registry
+
+requests:
+  memory: "1500Mi"
+  cpu: "800m"
+limits:
+  memory: "1500Mi"
+  cpu: "800m"
+
+virtualservice:
+  enabled: false
+
+ingress:
+  annotations: {}
+  hosts:
+    - host: "app.domain.com"
+  enabled: false
+  
+
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 3000
+
+deployConfigs:
+  domainName: "app.domain.com"
+  namespace: developer
+  gateway: gateway
+  version: 'latest'
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,16 +1,16 @@
-import {Module} from '@nestjs/common';
-import {AppController} from './app.controller';
-import {AppService} from './app.service';
-import {MongooseModule} from '@nestjs/mongoose';
-import {KubeResourcesModule} from './kube-resources/kube-resources.module';
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ApplicationResources } from './application-resources/application-resources.module';
 
 @Module({
     imports: [
-        MongooseModule.forRoot('mongodb://localhost:27021/auto-devops', {
+        MongooseModule.forRoot('mongodb://localhost:55000/auto-devops', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }),
-        KubeResourcesModule,
+        ApplicationResources,
     ],
     controllers: [AppController],
     providers: [AppService],
