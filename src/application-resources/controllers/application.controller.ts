@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from "@nestjs/swagger";
 import { Application } from '../models/application.model';
 import { ApplicationService } from '../services/application.service';
+import * as base64 from 'base-64';
 
 @ApiTags('Application')
 @Controller('application')
@@ -17,7 +18,12 @@ export class ApplicationController {
     @Get('/:id')
     async getOne(@Param('id') id: string) {
         const application = await this.applicationService.findById(id);
-        application.envRaw = decodeURI(application.envRaw);
+        return {...application._doc, envRaw: base64.decode(application.envRaw)};
+    }
+
+    @Get('/generate-application/:id')
+    async generateApplication(@Param('id') id: string) {
+        const application = await this.applicationService.generateNewProject(id);
         return application;
     }
 

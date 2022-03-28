@@ -8,7 +8,7 @@ export class KubernetesService {
     environments;
     constructor() {
         const fileValues = fs.readFileSync('./files/app-template/values.yaml', 'utf8');
-        this.values = fileValues;
+        this.values = YAML.parse(fileValues, { prettyErrors: true, simpleKeys: true });
         const fileDeployment = fs.readFileSync('./files/app-template/templates/deployment.yaml', 'utf8');
         this.deployment = YAML.parse(fileDeployment, { prettyErrors: true, simpleKeys: true });
         const fileConfigMap = fs.readFileSync('./files/app-template/templates/configMap.yaml', 'utf8');
@@ -16,7 +16,8 @@ export class KubernetesService {
     }
 
     setEnvsInConfigMap() {
-        this.configMap.data = this.environments.envsObject.reduce((prevItem, currItem) => {
+        console.log("this.environments.envsObject: ", this.environments.envsObject);
+        this.configMap.data = this.environments.reduce((prevItem, currItem) => {
             const [key, value] = [...Object.entries(currItem)[0]];
             return { [key]: value, ...prevItem };
         }, {});
@@ -39,6 +40,15 @@ export class KubernetesService {
         });
         this.deployment.spec.template.spec.containers[0].env = [...envArray];
         return true;
+    }
+
+    getPlainEnvs() {
+        let envArray = {};
+        Object.entries(this.configMap.data).map((nodoEnv) => {
+            const [key, value] = [...nodoEnv];
+            envArray = {...envArray, [key]: value};
+        });
+        return envArray;
     }
 
     setEnvironments(envObject) {

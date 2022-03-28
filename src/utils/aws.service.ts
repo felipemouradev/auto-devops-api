@@ -14,10 +14,11 @@ export class AWSService {
         });
     }
 
-    async createSSMParameters(name: string, envs: any[]) {
+    async createSSMParameters(name: string, envs: any) {
         var params = {
-            Name: name, 
+            Name: name,
             Value: JSON.stringify(envs),
+            Type: "StringList"
         };
         return new Promise((resolve, reject) => {
             this.ssmClient.putParameter(params, function (err, data) {
