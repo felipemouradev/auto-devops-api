@@ -9,6 +9,8 @@ import { Application } from '../models/application.model';
 import { Docker } from 'node-docker-api';
 import * as base64 from 'base-64';
 import { DockerService } from 'src/utils/docker.service';
+import * as Shelljs from 'shelljs';
+import slugify from 'slugify';
 
 @Injectable()
 export class ApplicationService extends BaseService<Application> {
@@ -28,36 +30,36 @@ export class ApplicationService extends BaseService<Application> {
         try {
             let result;
             const application: Application = await this.findById(applicationId);
+            const appName = slugify(application.name, {replacement: '-', lower: true, trim: true});
             if (application.isFrontend) {
                 // s3 things;
                 // cloudfront;
                 // dns register route53;
                 return;
             }
-            result = await this.dockerService.exec("aws --version");
-            console.log("result: ", result);
-            const container = await this.dockerService.putFile("", result.idContainer);
-            result = await this.dockerService.exec("ls -la", container);
-            console.log("result1: ", result);
 
-            return result;
-
+            let command = [];
+            command.push(Shelljs.exec("aws --version"));
+            command.push(Shelljs.exec("helm version"));
 
             const fullEnv = this.envParser.parse(base64.decode(application.envRaw));
+            this.kubernetesService.setAppName(appName);
             this.kubernetesService.setEnvironments(fullEnv);
             console.log("configMap: ", this.kubernetesService.getConfigMap())
             console.log("getPlainEnvs: ", this.kubernetesService.getPlainEnvs());
             //@TODO update to all environment
-            const ssmStoreParameters = await this.awsService.createSSMParameters(application.name, this.kubernetesService.getPlainEnvs());
-            console.log("ssmStoreParameters: ", ssmStoreParameters);
-            const ecrRepository: any = await this.awsService.createECRRepository(application.name);
-            console.log("ecrRepository: ", ecrRepository);
+            // const ssmStoreParameters = await this.awsService.createSSMParameters(application.name, this.kubernetesService.getPlainEnvs());
+            // console.log("ssmStoreParameters: ", ssmStoreParameters);
+            // const ecrRepository: any = await this.awsService.createECRRepository(application.name);
+            // console.log("ecrRepository: ", ecrRepository);
             const values = this.kubernetesService.getValues();
-            values.app.image.repository = ecrRepository.repository.repositoryUri;
+            // values.app.image.repository = ecrRepository.repository.repositoryUri;
             this.kubernetesService.setValues(values);
-            console.log("deployment: ", this.kubernetesService.getDeployment())
-            console.log("configMap: ", this.kubernetesService.getConfigMap())
-            return this.kubernetesService.getValues();
+            this.kubernetesService.generateFiles();
+            command.push(Shelljs.exec(`helm package ./files/${appName}`));
+            command.push(Shelljs.exec(`ls -la ./files/ | grep ${appName}`));
+            // command.push(Shelljs.exec(`rm ./files/${appName}-*`));
+            return command;
         } catch (e) {
             return e;
         }

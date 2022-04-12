@@ -6,7 +6,7 @@ import { ApplicationResources } from './application-resources/application-resour
 
 @Module({
     imports: [
-        MongooseModule.forRoot('mongodb://localhost:55000/auto-devops', {
+        MongooseModule.forRoot(process.env.MONGO_STRING_CONNECTION, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }),

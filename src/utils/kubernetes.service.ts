@@ -1,11 +1,13 @@
 import * as YAML from 'yaml'
 import * as fs from 'fs'
+import * as Shelljs from 'shelljs'
 
 export class KubernetesService {
     deployment;
     configMap;
     values;
     environments;
+    appName;
     constructor() {
         const fileValues = fs.readFileSync('./files/app-template/values.yaml', 'utf8');
         this.values = YAML.parse(fileValues, { prettyErrors: true, simpleKeys: true });
@@ -13,6 +15,10 @@ export class KubernetesService {
         this.deployment = YAML.parse(fileDeployment, { prettyErrors: true, simpleKeys: true });
         const fileConfigMap = fs.readFileSync('./files/app-template/templates/configMap.yaml', 'utf8');
         this.configMap = YAML.parse(fileConfigMap, { prettyErrors: true, simpleKeys: true });
+    }
+
+    setAppName(name: String) {
+        this.appName = name;
     }
 
     setEnvsInConfigMap() {
@@ -54,6 +60,7 @@ export class KubernetesService {
     setEnvironments(envObject) {
         this.environments = envObject;
         this.setEnvsInConfigMap();
+        this.setOfKeysConfigMapInDeployment();
     }
 
     getValues() {
@@ -73,10 +80,9 @@ export class KubernetesService {
     }
 
     generateFiles() {
-        fs.writeFileSync('./files/app-template/templates/configMap_.yaml', YAML.stringify(this.configMap), 'utf8');
-        fs.writeFileSync('./files/app-template/templates/deployment_.yaml', YAML.stringify(this.deployment), 'utf8');
-        // console.log(JSON.stringify(this.deployment, 0, 2));
-        // console.log(JSON.stringify(this.configMap, 0, 2));
+        Shelljs.exec(`cp -R ./files/app-template ./files/${this.appName}`);
+        fs.writeFileSync(`./files/${this.appName}/templates/configMap.yaml`, YAML.stringify(this.configMap), 'utf8');
+        fs.writeFileSync(`./files/${this.appName}/templates/deployment.yaml`, YAML.stringify(this.deployment), 'utf8');
     }
 
 }
