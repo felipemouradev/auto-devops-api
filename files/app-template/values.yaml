@@ -14,7 +14,7 @@ nameOverride: "name-app"
 fullnameOverride: "name-app"
 
 imagePullSecrets:
-  name: harbor-registry
+  name: ""
 
 requests:
   memory: "1500Mi"

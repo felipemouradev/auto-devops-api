@@ -7,6 +7,7 @@ import { AWSService } from 'src/utils/aws.service';
 import { KubernetesService } from 'src/utils/kubernetes.service';
 import { EnvParser } from 'src/utils/envparser.service';
 import { DockerService } from 'src/utils/docker.service';
+import { GithubService } from 'src/utils/github.service';
 
 
 @Module({
@@ -16,7 +17,12 @@ import { DockerService } from 'src/utils/docker.service';
         ]),
     ],
     providers: [
-        ApplicationService, AWSService, KubernetesService, EnvParser, DockerService,
+        ApplicationService, 
+        AWSService, 
+        KubernetesService, 
+        EnvParser, 
+        DockerService, 
+        GithubService,
     ],
     controllers: [
         ApplicationController,
